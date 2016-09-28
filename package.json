@@ -1,5 +1,5 @@
 {
-  "name": "promise-sequence",
+  "name": "sequence-as-promise",
   "version": "1.0.0",
   "description": "Executes promise sequence",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JiLiZART/promise-sequence.git"
+    "url": "git+https://github.com/JiLiZART/sequence-as-promise.git"
   },
   "keywords": [
     "promise",
@@ -21,9 +21,9 @@
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JiLiZART/promise-sequence/issues"
+    "url": "https://github.com/JiLiZART/sequence-as-promise/issues"
   },
-  "homepage": "https://github.com/JiLiZART/promise-sequence#readme",
+  "homepage": "https://github.com/JiLiZART/sequence-as-promise#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
