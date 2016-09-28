@@ -1,11 +1,18 @@
-[![Build Status](https://travis-ci.org/JiLiZART/promise-sequence.svg?branch=master)](https://travis-ci.org/JiLiZART/promise-sequence)
-# promise-sequence
-Выполняет массив функций как последовательность промисов
+[![Build Status](https://travis-ci.org/JiLiZART/sequence-as-promise.svg?branch=master)](https://travis-ci.org/JiLiZART/sequence-as-promise)
+## Sequence as Promise
+Executes array of functions and promises in sequence and returns Promise
 
-## Как использовать
-у нас есть массив функций, и нам нужно выполнить все эти функции последовательно
+## How to use
+We have array of functions, and we need to execute all that functions in sequence
+
+All these functions accepts two arguments, `function (value, results) {}`
+
+- `value` the result of previous function call
+- `results` an array of results previous functions calls
+
+
 ```js
-const seq = require('promise-sequence');
+const seq = require('sequence-as-promise');
 const values = [
     () => {
         return {moveCircleToMiddle: true};
@@ -38,11 +45,11 @@ const values = [
 seq(values).then(() => console.log('all done'))
 ```
 
-## Больше примеров
-Или нам нужно выполнить последовательность функций с паузами между вызовами.
+## More examples
+But, if we need to call all that functions with delays between them.
 
 ```js
-const seq = require('promise-sequence');
+const seq = require('sequence-as-promise');
 const values = [
     () => {
         return {moveCircleToMiddle: true};
@@ -82,10 +89,10 @@ const values = [
 seq(values).then(() => console.log('all done'))
 ```
 
-Или у нас есть массив из функций и промисов, нужно вызвать все последовательно включая промисы.
+Or we have Promise in that array of functions.
 
 ```js
-const seq = require('promise-sequence');
+const seq = require('sequence-as-promise');
 const values = [
     () => new Promise((resolve, reject) => {
         resolve({moveCircleToMiddle: true});
@@ -116,15 +123,4 @@ const values = [
     }
 ];
 seq(values).then(() => console.log('all done'))
-```
-
-## Аргументы коллбэка
-
-В каждую функцию последовательности передаются следующие аргументы
-
-- Результат вызова предидушей функции
-- Массив результатов вызовов функций последовательности
-
-```js
-function (value, results) {}
 ```

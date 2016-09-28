@@ -1,7 +1,7 @@
 {
   "name": "sequence-as-promise",
   "version": "1.0.0",
-  "description": "Executes promise sequence",
+  "description": "Executes sequence of function and returns promise",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -16,7 +16,9 @@
   "keywords": [
     "promise",
     "sequence",
-    "sequential"
+    "sequential",
+    "functions",
+    "delay"
   ],
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
