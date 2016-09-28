@@ -10,7 +10,6 @@ const isDefined = (el) => typeof el !== 'undefined';
  * @returns {Promise}
  */
 const timeout = (time, value) => {
-    console.log('timeout', time);
     return new Promise(
         (resolve) => {
             setTimeout(() => resolve(value), time)
