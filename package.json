@@ -1,7 +1,7 @@
 {
   "name": "sequence-as-promise",
   "version": "1.0.0",
-  "description": "Executes sequence of function and returns promise",
+  "description": "Executes array of functions as sequence and returns promise",
   "main": "index.js",
   "directories": {
     "test": "test"
