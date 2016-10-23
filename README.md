@@ -2,43 +2,57 @@
 ## Sequence as Promise
 Executes array of functions and promises in sequence and returns Promise
 
+## What it do?
+Behavior very similar to `Promise.all`, but all promises or functions executes in sequence.
+
+this code
+```js
+promise1.then(promise2.then(promise3.then(callback)));
+```
+
+equivalent to
+```js
+const seq = require('sequence-as-promise');
+
+seq([promise1, promise2, promise3]).then(callback);
+```
+
 ## How to use
 We have array of functions, and we need to execute all that functions in sequence
 
-All these functions accepts two arguments, `function (value, results) {}`
+All these functions accepts two arguments, `(prev, values) => {}`
 
-- `value` the result of previous function call
-- `results` an array of results previous functions calls
-
+- `prev` the result of previous function call
+- `values` an array of results from previous functions calls
 
 ```js
 const seq = require('sequence-as-promise');
 const values = [
-    () => {
+    (prev, values) => {
         return {moveCircleToMiddle: true};
     },
-    () => {
+    (prev, values) => {
         return {showGrayCircle: true};
     },
-    () => {
+    (prev, values) => {
         return {showMicrophone: true};
     },
-    () => {
+    (prev, values) => {
         return {moveCircleToTop: true};
     },
-    () => {
+    (prev, values) => {
         return {pulseGrayCircle: true};
     },
-    () => {
+    (prev, values) => {
         return {okText: 1};
     },
-    () => {
+    (prev, values) => {
         return {okText: 2};
     },
-    () => {
+    (prev, values) => {
         return {googleText: 1};
     },
-    () => {
+    (prev, values) => {
         return {googleText: 2};
     }
 ];
@@ -46,7 +60,7 @@ seq(values).then(() => console.log('all done'))
 ```
 
 ## More examples
-But, if we need to call all that functions with delays between them.
+But, if we need to call all that functions with primitive values between them (why not?).
 
 ```js
 const seq = require('sequence-as-promise');
@@ -54,34 +68,34 @@ const values = [
     () => {
         return {moveCircleToMiddle: true};
     },
-    100, // 100ms delay
-    () => {
+    100,
+    (prev, values) => { // prev == 100
         return {showGrayCircle: true};
     },
     () => {
         return {showMicrophone: true};
     },
-    500, // 500ms delay
-    () => {
+    500,
+    (prev, values) => { // prev == 500
         return {moveCircleToTop: true};
     },
-    100, // 100ms delay
+    100,
     () => {
         return {pulseGrayCircle: true};
     },
-    500, // 500ms delay
+    500,
     () => {
         return {okText: 1};
     },
-    500, // 500ms delay
+    500,
     () => {
         return {okText: 2};
     },
-    500, // 500ms delay
+    500,
     () => {
         return {googleText: 1};
     },
-    500, // 500ms delay
+    500,
     () => {
         return {googleText: 2};
     }
@@ -89,7 +103,7 @@ const values = [
 seq(values).then(() => console.log('all done'))
 ```
 
-Or we have Promise in that array of functions.
+Or we have Promises in that array of functions.
 
 ```js
 const seq = require('sequence-as-promise');

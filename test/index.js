@@ -5,7 +5,8 @@ chai.use(chaiAsPromised);
 
 const expect = chai.expect;
 const seq = require('../index.js');
-const timeout = (time) => new Promise((resolve) => setTimeout(() => resolve(), time))
+
+const timeout = (time) => new Promise((resolve) => setTimeout(() => resolve(), time));
 const values = [
     () => {
         return {moveCircleToMiddle: true};
@@ -35,7 +36,7 @@ const values = [
         return {googleText: 2};
     }
 ];
-const valuesWithDelays = [
+const valuesWithPrimitives = [
     () => {
         return {moveCircleToMiddle: true};
     },
@@ -46,30 +47,27 @@ const valuesWithDelays = [
     () => {
         return {showMicrophone: true};
     },
-    500,
+    '500',
     () => {
         return {moveCircleToTop: true};
     },
-    100,
+    '100',
     () => {
         return {pulseGrayCircle: true};
     },
-    500,
     () => {
         return {okText: 1};
     },
-    500,
     () => {
         return {okText: 2};
     },
-    500,
     () => {
         return {googleText: 1};
     },
-    500,
     () => {
         return {googleText: 2};
-    }
+    },
+    []
 ];
 
 const valuesWithPromises = [
@@ -109,6 +107,27 @@ const valuesWithPromises = [
     }
 ];
 
+const valuesWithRejectedPromise = [
+    () => {
+        return {moveCircleToMiddle: true};
+    },
+    timeout(100),
+    () => {
+        return {showGrayCircle: true};
+    },
+    () => {
+        return {showMicrophone: true};
+    },
+    Promise.reject({error: true})
+];
+
+const resultWithRejected = [
+    {moveCircleToMiddle: true},
+    {showGrayCircle: true},
+    {showMicrophone: true},
+    {error: true}
+];
+
 const result = [
     {moveCircleToMiddle: true},
     {showGrayCircle: true},
@@ -121,6 +140,22 @@ const result = [
     {googleText: 2}
 ];
 
+const resultWithPrimitives = [
+    {moveCircleToMiddle: true},
+    100,
+    {showGrayCircle: true},
+    {showMicrophone: true},
+    '500',
+    {moveCircleToTop: true},
+    '100',
+    {pulseGrayCircle: true},
+    {okText: 1},
+    {okText: 2},
+    {googleText: 1},
+    {googleText: 2},
+    []
+];
+
 describe('promise sequence', () => {
     it('should execute sequence of functions', () => {
         return seq(values).then((res) => {
@@ -128,15 +163,22 @@ describe('promise sequence', () => {
         });
     });
 
-    it('should execute sequence of functions with delay', () => {
-        return seq(valuesWithDelays).then((res) => {
-            expect(res).to.be.eql(result);
+    it('should execute sequence of functions with primitive values', () => {
+        return seq(valuesWithPrimitives).then((res) => {
+            expect(res).to.be.eql(resultWithPrimitives);
         });
     });
 
     it('should execute sequence of functions with promises', () => {
         return seq(valuesWithPromises).then((res) => {
             expect(res).to.be.eql(result);
+        });
+    });
+
+    it('should execute sequence of functions with rejected promise', () => {
+        return seq(valuesWithRejectedPromise).catch((res) => {
+            console.log('rejected', res);
+            expect(res).to.be.eql(resultWithRejected);
         });
     });
 });

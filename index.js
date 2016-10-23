@@ -1,85 +1,45 @@
-const isNum = (el) => typeof el === 'number';
 const isFunc = (el) => typeof el === 'function';
 const isPromise = (el) => !!el && (typeof el === 'object' || isFunc(el)) && isFunc(el.then);
 const isDefined = (el) => typeof el !== 'undefined';
 
 /**
- * Wraps time into timeout promise
- * @param {Number} time
- * @param {*} value
- * @returns {Promise}
- */
-const timeout = (time, value) => {
-    return new Promise(
-        (resolve) => {
-            setTimeout(() => resolve(value), time)
-        }
-    );
-};
-
-/**
- * Wraps callback function into promise
- * @param {Function} func
- * @param {*} prevResult
- * @param {Array} results
- * @param {Function} pushResult
- * @returns {Promise}
- */
-const callback = (func, prevResult, results, pushResult) => {
-    const result = func(prevResult, results);
-    pushResult(result);
-
-    return new Promise(
-        (resolve) => {
-            resolve(result);
-        }
-    );
-};
-
-const promise = (el, pushResult) => {
-    return el.then((result) => {
-        pushResult(result);
-    });
-};
-
-/**
- *
+ * Transforms current value to Promise
  * @param curr
- * @param results
+ * @param values
+ * @param {Function} append
+ * @param result
  * @returns {Promise}
- * @throws Error
  */
-const execute = (curr, results) => (prevResult) => {
-    const pushResult = (result) => {
-        if (isDefined(result)) results.push(result);
-    };
+const transform = (curr, values, append, result) => {
+    if (isPromise(curr)) return curr;
+    if (isFunc(curr)) return Promise.resolve(curr(result, values));
 
-    if (isNum(curr)) return timeout(curr, prevResult);
-    if (isPromise(curr)) return promise(curr, pushResult);
-    if (isFunc(curr)) return callback(curr, prevResult, results, pushResult);
-
-    throw new Error('Invalid value given in sequence, expected number, promise or function');
+    return Promise.resolve(curr);
 };
 
 /**
  * Executes array of values as promise sequence
- * @param {Array} values
+ * @param {Array} seq
  * @returns {Promise}
  * @throws Error
  */
-module.exports = (values) => new Promise(
+module.exports = (seq) => new Promise(
     (resolve, reject) => {
-        const results = [];
+        const values = [], append = (result) => {
+            if (isDefined(result)) values.push(result);
+        };
 
         if (!Array.isArray(values)) {
             throw new Error('promise-sequence expects array as first argument');
         }
 
-        values
+        seq
             .reduce(
-                (prev, curr) => prev.then(execute(curr, results), reject),
+                (prev, curr) => prev.then(
+                    (result) => transform(curr, values, append, result).then(append, append)
+                ),
                 Promise.resolve()
             )
-            .then((...args) => resolve(results), () => reject(results))
+            .then(() => resolve(values), () => reject(values))
     }
 );
