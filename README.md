@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/JiLiZART/sequence-as-promise.svg?branch=master)](https://travis-ci.org/JiLiZART/sequence-as-promise)
+[![Code Climate](https://codeclimate.com/github/JiLiZART/sequence-as-promise/badges/gpa.svg)](https://codeclimate.com/github/JiLiZART/sequence-as-promise)
 ## Sequence as Promise
-Executes array of functions and promises in sequence and returns Promise
+Is zero dependency, lightweight function that allows 
+execute array of functions and promises in sequence and returns Promise
 
 ## What it do?
 Behavior very similar to `Promise.all`, but all promises or functions executes in sequence.
@@ -18,6 +20,17 @@ seq([promise1, promise2, promise3]).then(callback);
 ```
 
 ## How to use
+
+with npm
+```shell
+npm i --save sequence-as-promise
+```
+
+with yarn
+```shell
+yarn add sequence-as-promise
+```
+
 We have array of functions, and we need to execute all that functions in sequence
 
 All these functions accepts two arguments, `(prev, values) => {}`
