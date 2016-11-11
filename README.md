@@ -9,7 +9,7 @@ Behavior very similar to `Promise.all`, but all promises or functions executes i
 
 this code
 ```js
-promise1.then(promise2.then(promise3.then(callback)));
+promise1.then(() => promise2.then(() => promise3.then(callback)));
 ```
 
 equivalent to
