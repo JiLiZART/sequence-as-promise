@@ -4,8 +4,8 @@
 It's zero dependency and lightweight function that allows execute array of functions and promises in sequence and returns Promise
 
 ## What it do?
-Behavior very similar to `Promise.all`, but all promises or functions executes in sequence.
-Function executes promises with functions one by one and returns promise withresults array
+Behavior very similar to `Promise.all`.
+It's executes promises with functions one by one and returns promise with array of results
 
 this code
 ```js
@@ -35,7 +35,7 @@ yarn add sequence-as-promise
 
 We have array of functions with promises, and we need to execute all that functions in sequence
 
-All these functions accepts two arguments, `(prevResult, results) => {}`
+All functions in sequence accepts two arguments, `(prevResult, results) => {}`
 
 - `prevResult` the result of previous function or promise call
 - `results` an array of results from previous functions or promises calls
@@ -58,7 +58,7 @@ sequence([
 
 ## Functions that returns promise
 
-Most standard use case is fetch dependant data one by one
+Most standard use case is a fetch dependant data one by one
 
 ```js
 const sequence = require('sequence-as-promise');
@@ -83,7 +83,7 @@ sequence([
 
 ## Handle errors
 
-Any function or promise in sequence can throw an error, so we need handle it
+Any function or promise in sequence can throw an error, so we need to handle it
 
 ```js
 const sequence = require('sequence-as-promise');
