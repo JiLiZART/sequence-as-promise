@@ -4,42 +4,54 @@ const isDefined = (el) => typeof el !== 'undefined';
 
 /**
  * Transforms current value to Promise
- * @param curr
- * @param values
- * @param {Function} append
- * @param result
+ * @param {Promise|Function|Object} current
+ * @param {Array} args for apply if current is function
  * @returns {Promise}
  */
-const transform = (curr, values, append, result) => {
-    if (isPromise(curr)) return curr;
-    if (isFunc(curr)) return Promise.resolve(curr(result, values));
+const transform = (current, args) =>
+    isFunc(current) ? promisify(current.apply(null, args)) : promisify(current);
 
-    return Promise.resolve(curr);
-};
+/**
+ * Resolve value as promise
+ * @param value
+ * @returns {Promise}
+ */
+const promisify = (value) =>
+    isPromise(value) ? value : Promise.resolve(value);
+
+/**
+ * Appends result to results array
+ * @param {Array} results
+ */
+const appender = (results) =>
+    (result) => {
+        isDefined(result) && results.push(result);
+
+        return results;
+    };
+
+const process = (results, append) =>
+    (prev, value) =>
+        prev
+            .then((result) => transform(value, [result, results])
+                .then(append));
 
 /**
  * Executes array of values as promise sequence
- * @param {Array} seq
+ * @param {Array} sequence
+ * @param {Array} [results]
  * @returns {Promise}
  * @throws Error
  */
-module.exports = (seq) => new Promise(
+module.exports = (sequence, results = []) => new Promise(
     (resolve, reject) => {
-        const values = [], append = (result) => {
-            if (isDefined(result)) values.push(result);
-        };
+        if (!Array.isArray(sequence)) throw 'promise-sequence expects array as first argument';
 
-        if (!Array.isArray(values)) {
-            throw new Error('promise-sequence expects array as first argument');
-        }
-
-        seq
-            .reduce(
-                (prev, curr) => prev.then(
-                    (result) => transform(curr, values, append, result).then(append, append)
-                ),
-                Promise.resolve()
-            )
-            .then(() => resolve(values), () => reject(values))
+        return sequence
+            .reduce(process(results, appender(results)), promisify())
+            .then(
+                () => resolve(results),
+                (error) => reject(appender(results)(error))
+            );
     }
 );
